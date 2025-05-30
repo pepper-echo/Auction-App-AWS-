@@ -1,0 +1,37 @@
+{
+  "Comment": "Validate and Submit Bid",
+  "StartAt": "ValidateUser",
+  "States": {
+    "ValidateUser": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:796718827196:function:validateUser",
+      "Next": "ValidateAuction"
+    },
+    "ValidateAuction": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:796718827196:function:validateAuction",
+      "Next": "ValidateBid"
+    },
+    "ValidateBid": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:796718827196:function:validateBid",
+      "Next": "StoreBid"
+    },
+    "StoreBid": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:us-east-1:796718827196:function:storeBid",
+      "Next": "NotifyHighBidder"
+    },
+    "NotifyHighBidder": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "arn:aws:sns:us-east-1:796718827196:NewHighBidderTopic",
+        "Message": {
+          "Input.$": "$"
+        }
+      },
+      "End": true
+    }
+  }
+}
